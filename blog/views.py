@@ -1,5 +1,14 @@
-from django.shortcuts import render
+from multiprocessing import context
+from django import template
+from django.http import HttpResponse
+from django.template import loader
+from .models import Post
 
 
 def post_list(request):
-    return render(request, 'blog/post_list.html', {})
+    posts = Post.objects.order_by('created_date')
+    template = loader.get_template('blog/post_list.html')
+    context = {
+        'posts': posts,
+        }
+    return HttpResponse(template.render(context, request))
